@@ -11,7 +11,6 @@
 		content="Generate reverse proxy configurations for Marzban panel using Xray core."
 	/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="icon" href="/favicon.ico" />
 </svelte:head>
 
 <div class="mx-auto max-w-2xl space-y-10">

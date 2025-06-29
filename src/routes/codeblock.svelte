@@ -5,7 +5,6 @@
 	import { json } from '@codemirror/lang-json';
 	import Clipboard from '@lucide/svelte/icons/clipboard';
 	import { githubLight } from '@uiw/codemirror-theme-github';
-	import { basicSetup } from 'codemirror';
 	import CodeMirror from 'svelte-codemirror-editor';
 	import { toast } from 'svelte-sonner';
 

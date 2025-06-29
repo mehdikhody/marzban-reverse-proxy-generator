@@ -35,6 +35,7 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
+	import Clipboard from '@lucide/svelte/icons/clipboard';
 	import RefreshCcwIcon from '@lucide/svelte/icons/refresh-ccw';
 	import snakeCase from 'lodash/snakeCase';
 	import { toast } from 'svelte-sonner';
@@ -73,7 +74,7 @@
 		{
 			inbounds: [
 				{
-					tag: `${name}_INBOUND_VMESS_TCP_${$formData.portal_port}`,
+					tag: `${name}_VMESS_TCP_${$formData.portal_port}`,
 					listen: '0.0.0.0',
 					port: $formData.portal_port,
 					protocol: 'vmess',
@@ -127,7 +128,7 @@
 					protocol: 'blackhole'
 				},
 				{
-					tag: `${name}_OUTBOUND_VMESS_TCP_${$formData.portal_port}`,
+					tag: `${name}_OUT_VMESS_TCP_${$formData.portal_port}`,
 					sendThrough: $formData.upstream_ip,
 					protocol: 'vmess',
 					settings: {
@@ -204,7 +205,7 @@
 					{
 						domain: [`full:${name}_${randkey}.com`],
 						inboundTag: [`${name}_BRIDGE_${randkey}`],
-						outboundTag: `${name}_OUTBOUND_VMESS_TCP_${$formData.portal_port}`,
+						outboundTag: `${name}_OUT_VMESS_TCP_${$formData.portal_port}`,
 						type: 'field'
 					},
 					{
@@ -298,6 +299,26 @@
 				<Form.Label>Client ID</Form.Label>
 				<div class="flex items-center gap-2">
 					<Input {...props} bind:value={$formData.client_id} />
+					<Tooltip.Provider delayDuration={0}>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<Button
+									class="size-8 cursor-pointer"
+									variant="outline"
+									size="icon"
+									onclick={() => {
+										navigator.clipboard.writeText($formData.client_id);
+										toast.success('UUID copied to clipboard');
+									}}
+								>
+									<Clipboard />
+								</Button>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								<p>Copy</p>
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 					<Tooltip.Provider delayDuration={0}>
 						<Tooltip.Root>
 							<Tooltip.Trigger>

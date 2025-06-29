@@ -63,6 +63,6 @@
 		</Card.Content>
 	</Card.Root>
 	<p class="text-center text-sm text-gray-500">
-		Created By ❤️ By <a class="text-blue-700" href="https://github.com/mehdikhody">Mehdikhody</a>
+		Made with ❤️ by <a class="text-blue-700" href="https://github.com/mehdikhody">Mehdikhody</a>
 	</p>
 </div>

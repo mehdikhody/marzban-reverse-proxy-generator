@@ -1,9 +1,18 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
 	import * as Collapsible from '$lib/components/ui/collapsible';
-	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import Form from './form.svelte';
 </script>
+
+<svelte:head>
+	<title>Marzban Reverse Proxy Generator</title>
+	<meta
+		name="description"
+		content="Generate reverse proxy configurations for Marzban panel using Xray core."
+	/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="icon" href="/favicon.ico" />
+</svelte:head>
 
 <div class="mx-auto max-w-2xl space-y-10">
 	<Card.Root>

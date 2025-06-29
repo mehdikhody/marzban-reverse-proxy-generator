@@ -56,7 +56,7 @@
 							If you're using HAProxy or Nginx to handle HTTPS (port 443) on your bridge server:
 						</p>
 						<ul>
-							<li>Enable the <strong>bridge port</strong> option.</li>
+							<li>Enable the <strong>Proxy Port</strong> option.</li>
 							<li>Set it to <strong>443</strong> (or any other port you prefer).</li>
 							<li>The upstream server will then connect through that port.</li>
 						</ul>

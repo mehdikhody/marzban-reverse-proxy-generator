@@ -4,23 +4,23 @@
 
 	const formSchema = z.object({
 		name: z.string('Name must be a string').min(1, 'Name is required').default('iran france'),
-		portal_port: z
-			.number('Portal port must be a number')
-			.int('Portal port must be an integer')
-			.min(1, 'Portal port must be a positive integer')
-			.default(10010),
 		tunnel_port: z
-			.number('Tunnel port must be a number')
-			.int('Tunnel port must be an integer')
-			.min(1, 'Tunnel port must be a positive integer')
+			.number('Tunnel Port must be a number')
+			.int('Tunnel Port must be an integer')
+			.min(1, 'Tunnel Port must be a positive integer')
+			.default(10010),
+		main_port: z
+			.number('Main Port must be a number')
+			.int('Main Port must be an integer')
+			.min(1, 'Main Port must be a positive integer')
 			.default(20010),
 		upstream_ip: z.ipv4('Upstream IP must be a valid IPv4 address').default('192.168.1.1'),
 		bridge_ip: z.ipv4('Bridge IP must be a valid IPv4 address').default('192.168.1.2'),
-		bridge_port_enabled: z.boolean('Bridge port enabled must be a boolean').default(false),
-		bridge_port: z
-			.number('Bridge port must be a number')
-			.int('Bridge port must be an integer')
-			.min(1, 'Bridge port must be a positive integer')
+		proxy_port_enabled: z.boolean('Proxy Port enabled must be a boolean').default(false),
+		proxy_port: z
+			.number('Proxy Port must be a number')
+			.int('Proxy Port must be an integer')
+			.min(1, 'Proxy Port must be a positive integer')
 			.optional(),
 		client_id: z.uuid('Client ID must be a valid UUID').default(uuidv4())
 	});
@@ -58,8 +58,8 @@
 	const { form: formData, enhance, errors } = form;
 
 	$: {
-		if (!$formData.bridge_port_enabled) {
-			$formData.bridge_port = $formData.portal_port;
+		if (!$formData.proxy_port_enabled) {
+			$formData.proxy_port = $formData.tunnel_port;
 		}
 	}
 
@@ -74,9 +74,9 @@
 		{
 			inbounds: [
 				{
-					tag: `${name}_VMESS_TCP_${$formData.portal_port}`,
+					tag: `${name}_VMESS_TCP_${$formData.tunnel_port}`,
 					listen: '0.0.0.0',
-					port: $formData.portal_port,
+					port: $formData.tunnel_port,
 					protocol: 'vmess',
 					settings: {
 						clients: [],
@@ -93,9 +93,9 @@
 					}
 				},
 				{
-					tag: `${name}_VLESS_TCP_NONE_${$formData.tunnel_port}`,
+					tag: `${name}_VLESS_TCP_NONE_${$formData.main_port}`,
 					listen: '0.0.0.0',
-					port: $formData.tunnel_port,
+					port: $formData.main_port,
 					protocol: 'vless',
 					settings: {
 						clients: [],
@@ -128,14 +128,14 @@
 					protocol: 'blackhole'
 				},
 				{
-					tag: `${name}_OUT_VMESS_TCP_${$formData.portal_port}`,
+					tag: `${name}_OUT_VMESS_TCP_${$formData.tunnel_port}`,
 					sendThrough: $formData.upstream_ip,
 					protocol: 'vmess',
 					settings: {
 						vnext: [
 							{
 								address: $formData.bridge_ip,
-								port: $formData.bridge_port,
+								port: $formData.proxy_port,
 								users: [
 									{
 										id: $formData.client_id,
@@ -193,19 +193,19 @@
 					},
 					{
 						domain: [`full:${name}_${randkey}.com`],
-						inboundTag: [`${name}_INBOUND_VMESS_TCP_${$formData.portal_port}`],
+						inboundTag: [`${name}_INBOUND_VMESS_TCP_${$formData.tunnel_port}`],
 						outboundTag: `${name}_PORTAL_${randkey}`,
 						type: 'field'
 					},
 					{
-						inboundTag: [`${name}_VLESS_TCP_NONE_${$formData.tunnel_port}`],
+						inboundTag: [`${name}_VLESS_TCP_NONE_${$formData.main_port}`],
 						outboundTag: `${name}_PORTAL_${randkey}`,
 						type: 'field'
 					},
 					{
 						domain: [`full:${name}_${randkey}.com`],
 						inboundTag: [`${name}_BRIDGE_${randkey}`],
-						outboundTag: `${name}_OUT_VMESS_TCP_${$formData.portal_port}`,
+						outboundTag: `${name}_OUT_VMESS_TCP_${$formData.tunnel_port}`,
 						type: 'field'
 					},
 					{
@@ -246,19 +246,19 @@
 			{/snippet}
 		</Form.Control>
 	</Form.Field>
-	<Form.Field {form} name="portal_port" class="col-span-1">
-		<Form.Control>
-			{#snippet children({ props })}
-				<Form.Label>Portal Port</Form.Label>
-				<Input {...props} type="number" bind:value={$formData.portal_port} />
-			{/snippet}
-		</Form.Control>
-	</Form.Field>
 	<Form.Field {form} name="tunnel_port" class="col-span-1">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Tunnel Port</Form.Label>
 				<Input {...props} type="number" bind:value={$formData.tunnel_port} />
+			{/snippet}
+		</Form.Control>
+	</Form.Field>
+	<Form.Field {form} name="main_port" class="col-span-1">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Main Port</Form.Label>
+				<Input {...props} type="number" bind:value={$formData.main_port} />
 			{/snippet}
 		</Form.Control>
 	</Form.Field>
@@ -278,17 +278,17 @@
 			{/snippet}
 		</Form.Control>
 	</Form.Field>
-	<Form.Field {form} name="bridge_port" class="col-span-2">
+	<Form.Field {form} name="proxy_port" class="col-span-2">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Bridge Port</Form.Label>
+				<Form.Label>Proxy Port</Form.Label>
 				<div class="flex items-center gap-2">
-					{#if $formData.bridge_port_enabled}
-						<Input {...props} type="number" bind:value={$formData.bridge_port} />
+					{#if $formData.proxy_port_enabled}
+						<Input {...props} type="number" bind:value={$formData.proxy_port} />
 					{:else}
-						<Input {...props} type="text" value={$formData.portal_port} disabled />
+						<Input {...props} type="text" value={$formData.tunnel_port} disabled />
 					{/if}
-					<Switch bind:checked={$formData.bridge_port_enabled} />
+					<Switch bind:checked={$formData.proxy_port_enabled} />
 				</div>
 			{/snippet}
 		</Form.Control>

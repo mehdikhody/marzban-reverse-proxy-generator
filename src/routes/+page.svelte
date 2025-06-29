@@ -9,7 +9,7 @@
 	<Card.Root>
 		<Card.Content class="space-y-10">
 			<article class="prose prose-sm">
-				<h2>Reverse Proxy Generator</h2>
+				<h2>Marzban Reverse Proxy Generator</h2>
 				<p>
 					This tool helps you generate reverse proxy configurations for the Marzban panel using Xray
 					core. Setting this up was a confusing task for me, so I created this tool to simplify the

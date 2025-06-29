@@ -193,7 +193,7 @@
 					},
 					{
 						domain: [`full:${name}_${randkey}.com`],
-						inboundTag: [`${name}_INBOUND_VMESS_TCP_${$formData.tunnel_port}`],
+						inboundTag: [`${name}_VMESS_TCP_${$formData.tunnel_port}`],
 						outboundTag: `${name}_PORTAL_${randkey}`,
 						type: 'field'
 					},
